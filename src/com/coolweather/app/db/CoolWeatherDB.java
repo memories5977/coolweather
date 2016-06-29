@@ -87,11 +87,12 @@ public class CoolWeatherDB {
 	
 	/**
 	 * 查询数据库城市表中的所有城市对象 
+	 * @param provinceId 所属省份的数据库Id
 	 * @return
 	 */
-	public List<City> loadCity() {
+	public List<City> loadCity(int provinceId) {
 		List<City> cityList = new ArrayList<City>();
-		Cursor cursor = db.rawQuery("select * from city", null);
+		Cursor cursor = db.rawQuery("select * from city where province_id = ?", new String[]{String.valueOf(provinceId)});
 		if(cursor.moveToFirst()) {
 			do {
 				City city = new City();
@@ -111,24 +112,25 @@ public class CoolWeatherDB {
 	 */
 	public void saveCounty(County county) {
 		if(county != null) {
-			db.execSQL("insert into county (conuty_code, county_name, city_id) values (?, ?, ?)",
+			db.execSQL("insert into county (county_code, county_name, city_id) values (?, ?, ?)",
 					new String[]{county.getCountyCode(), county.getCountyName(), String.valueOf(county.getCityId())});
 		}
 	}
 	
 	/**
 	 * 查询数据库县城表中所有县城对象
+	 * @param cityId 所属城市的数据库id
 	 * @return
 	 */
-	public List<County> loadCounty() {
+	public List<County> loadCounty(int cityId) {
 		List<County> countyList = new ArrayList<County>();
-		Cursor cursor = db.rawQuery("select * from county", null);
+		Cursor cursor = db.rawQuery("select * from county where city_id = ?", new String[]{String.valueOf(cityId)});
 		if(cursor.moveToFirst()) {
 			do {
 				County county = new County();
 				county.setCityId(cursor.getInt(cursor.getColumnIndex("city_id")));
 				county.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
-				county.setCountyName(cursor.getString(cursor.getColumnIndex("cursor_name")));
+				county.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
 				county.setId(cursor.getInt(cursor.getColumnIndex("id")));
 				countyList.add(county);
 			} while (cursor.moveToNext());

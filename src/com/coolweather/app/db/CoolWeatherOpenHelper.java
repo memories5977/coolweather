@@ -27,7 +27,7 @@ public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
 	
 	//县城表建表语句
 	private static final String CREATE_COUNTY = "create table county ("
-			+ "id integer primary key autoincrement"
+			+ "id integer primary key autoincrement, "
 			+ "county_name text, "
 			+ "county_code text, "
 			+ "city_id integer)";
@@ -45,7 +45,7 @@ public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * 实例化对象时自动调用，执行三个建库语句，创建三个数据库 
+	 * 实例化对象时自动调用，执行三个建库语句，创建三个数据库
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
