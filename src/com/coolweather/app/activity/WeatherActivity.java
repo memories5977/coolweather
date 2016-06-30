@@ -6,11 +6,13 @@ import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -21,7 +23,7 @@ import android.widget.TextView;
  * @author Administrator
  *
  */
-public class WeatherActivity extends Activity {
+public class WeatherActivity extends Activity implements OnClickListener {
 
 	//声明各UI控件
 	private LinearLayout weatherInfoLayout;
@@ -56,6 +58,8 @@ public class WeatherActivity extends Activity {
 		temp1Text = (TextView)this.findViewById(R.id.temp1);
 		temp2Text = (TextView)this.findViewById(R.id.temp2);
 		currentDateText = (TextView)this.findViewById(R.id.current_data);
+		switchCity = (Button)this.findViewById(R.id.switch_ctiy);
+		refreshWeather = (Button)this.findViewById(R.id.refresh_weather);
 		
 		//得到前一个活动传过来的县级代码
 		String countyCode = this.getIntent().getStringExtra("countyCode");
@@ -68,6 +72,9 @@ public class WeatherActivity extends Activity {
 		} else {	//没有县级代码记录，说明之前选过了，sharedPreferences中有记录，则直接显示
 			showWeather();
 		}
+		
+		switchCity.setOnClickListener(this);
+		refreshWeather.setOnClickListener(this);
 	}
 	
 	/**
@@ -148,5 +155,30 @@ public class WeatherActivity extends Activity {
 		currentDateText.setText(prefs.getString("current_date", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);
+	}
+
+	/**
+	 * 按键点击事件
+	 */
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+		case R.id.switch_ctiy:	//切换城市，跳转到选择地区活动
+			Intent intent = new Intent(this, ChooseAreaActivity.class);
+			intent.putExtra("from_weather_activity", true);
+			this.startActivity(intent);
+			finish();	//结束当前活动
+			break;
+		case R.id.refresh_weather:	//更新天气数据
+			publishText.setText("同步中...");
+			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);	
+			String weatherCode = pref.getString("city_code", "");	//得到当前地区的天气编号
+			if (!TextUtils.isEmpty(weatherCode)) {
+				queryWeatherInfo(weatherCode);	//重新向服务器请求天气数据
+			}
+			break;
+		default:
+			break;
+		}
 	}
 }

@@ -59,17 +59,24 @@ public class ChooseAreaActivity extends Activity {
 	
 	//当前所处地区的级别
 	private int currentLevel;
+	
+	//标注是否从天气活动中转过来的
+	private boolean isFromWeatherActivity;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		//得到isFromWeatherActivity的值，看当前活动是不是从天气活动中转过来的
+		isFromWeatherActivity = this.getIntent().getBooleanExtra("from_weather_activity", false);
+		
+		//判断是否预先选择过地区
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		if (prefs.getBoolean("city_selected", false)) {
+		if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {	//如果有选择过且该活动不是由天气活动转过来的，则直接跳转到天气活动页面
 			Intent intent = new Intent(this, WeatherActivity.class);
 			this.startActivity(intent);
-			this.finish();
-			return;
+			this.finish();	//结束当前活动
+			return;	//直接返回
 		}
 		
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);

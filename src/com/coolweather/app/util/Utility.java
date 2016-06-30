@@ -94,6 +94,11 @@ public class Utility {
 		return false;
 	}
 	
+	/**
+	 * 处理服务器返回的天气信息（JSON格式），存到SharedPreference中
+	 * @param context
+	 * @param response
+	 */
 	public static void handleWeatherResponse(Context context, String response) {
 		try {
 			JSONObject jsonObject = new JSONObject(response);
@@ -110,6 +115,16 @@ public class Utility {
 		}
 	}
 	
+	/**
+	 * 保存天气信息到ShaerdPerference中
+	 * @param context
+	 * @param cityName
+	 * @param cityCode
+	 * @param temp1
+	 * @param temp2
+	 * @param weatherDesp
+	 * @param publishTime
+	 */
 	public static void saveWeatherInfo (Context context, String cityName, String cityCode, String temp1,
 			String temp2, String weatherDesp, String publishTime) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
